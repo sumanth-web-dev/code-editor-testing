@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {# The title block should be directly in the head #}
+    <title>{% block title %}HR App{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Custom CSS for the header bar */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f0f2f5; /* Light gray background to show header contrast */
+        }
+
+        /* Styling for the navigation bar */
+        nav {
+            background-color: #ffffff;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+        }
+
+        nav .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #11998e; /* A vibrant green color */
+            margin-right: 2rem; /* Space between logo and nav links */
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap; /* Allow links to wrap */
+            gap: 1.5rem; /* Space between navigation items */
+        }
+
+        /* Corrected: nav ul li a */
+        nav ul li a {
+            text-decoration: none;
+            color: #555; /* Dark gray for links */
+            font-weight: 500;
+            transition: color 0.3s ease; /* Smooth transition for hover effect */
+            padding: 0.25rem 0; /* Vertical padding for hover area */
+            white-space: nowrap; /* Prevent links from breaking */
+        }
+
+        nav ul li a:hover {
+            color: #11998e; /* Change color on hover */
+        }
+
+        /* Styling for the main heading below the nav */
+        h1 {
+            text-align: center;
+            color: #222;
+            margin-top: 2rem;
+            font-size: 2.5rem; /* Larger font for heading */
+            font-weight: 700;
+        }
+
+        /* Horizontal rule styling */
+        hr {
+            margin: 20px auto; /* Centered with vertical margin */
+            width: 80%; /* Width of the separator */
+            border: none;
+            border-top: 1px solid #e0e0e0; /* Light gray line */
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column; /* Stack logo and nav links vertically */
+                align-items: flex-start; /* Align items to the start */
+                padding: 1rem;
+            }
+
+            nav .logo {
+                margin-bottom: 1rem; /* Space below logo when stacked */
+                margin-right: 0;
+            }
+
+            nav ul {
+                flex-direction: column; /* Stack nav links vertically */
+                gap: 0.75rem; /* Smaller gap for stacked links */
+            }
+
+            nav ul li a {
+                width: 100%; /* Full width for stacked links */
+                padding: 0.5rem 0;
+            }
+
+            h1 {
+                font-size: 2rem; /* Adjust heading size for mobile */
+            }
+
+            hr {
+                width: 90%; /* Adjust separator width for mobile */
+            }
+        }
+
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .user-email {
+            font-size: 1.1rem;
+            color: #11998e;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .nav-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .user-email {
+                margin-left: 0;
+                font-size: 1rem;
+            }
+        }
+
+  #flash-messages {
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+
+  .flash {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .flash-success {
+    background-color: #38a169;
+  }
+
+  .flash-error {
+    background-color: #e53e3e;
+  }
+
+  .flash-warning {
+    background-color: #dd6b20;
+  }
+
+  .flash-info {
+    background-color: #3182ce;
+  }
+
+
+
+  #flash-messages {
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+
+  .flash {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .flash-success {
+    background-color: #38a169;
+  }
+
+  .flash-error {
+    background-color: #e53e3e;
+  }
+
+  .flash-warning {
+    background-color: #dd6b20;
+  }
+
+  .flash-info {
+    background-color: #3182ce;
+  }
+
+
+
+    </style>
+    {# The css block for page-specific styles should be here #}
+    {% block css %}{% endblock %}
+</head>
+<body>
+
+    <nav>
+        <div class="nav-header">
+            <div class="logo">HR App</div>
+            <div class="user-email">Welcome, {{ current_user.email }}</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('hr.hr_home') }}">🏠 Home</a></li>
+            <li><a href="{{ url_for('hr.hr_dashboard') }}">➕ Create Interview</a></li>
+            <li><a href="{{ url_for('hr.hr_links') }}">🔗 Interview Links</a></li>
+            <!-- <li><a href="{{ url_for('hr.hr_summary') }}">📋 Summary</a></li> -->
+            <li><a href="{{ url_for('hr.hr_analytics') }}">📊 Analytics</a></li>
+            <li><a href="{{ url_for('hr.hr_export') }}">📥 Export CSV</a></li>
+            <li><a href="{{ url_for('hr.hr_settings') }}">⚙️ Settings</a></li>
+            <li><a href="{{ url_for('hr.hr_logout') }}">🚪 Logout</a></li>
+        </ul>
+    </nav>
+
+    <hr>
+
+    {# The main content block #}
+    {% block content %}
+    {% include 'base/_flashes.html' %}
+  <div style="padding: 20px; text-align: center; color: #2b6cb0; background-color: #ebf8ff; border: 1px solid #bee3f8; border-radius: 6px; margin-bottom: 20px;">
+    <strong>ℹ️ Notice:</strong> Interview links, interview records, and student details will be automatically deleted after 6 months from their creation date.
+  </div>
+    {% endblock content %}
+
+    {# The js block for page-specific scripts should be here, usually at the end of body #}
+    {% block js %}
+    <script>
+        // Render existing flashed messages into DOM
+
+// Function to create flash message dynamically
+function showFlashMessage(category, message) {
+    const flashContainer = document.getElementById('flash-messages');
+
+    const flashDiv = document.createElement('div');
+    flashDiv.className = `flash-message ${category}`;
+    flashDiv.innerHTML = message;
+
+    flashDiv.style.padding = '14px 20px';
+    flashDiv.style.marginBottom = '10px';
+    flashDiv.style.borderRadius = '8px';
+    flashDiv.style.color = '#fff';
+    flashDiv.style.fontWeight = '500';
+    flashDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    flashDiv.style.transition = 'all 0.5s ease';
+
+    // Color based on category
+    switch (category) {
+        case 'success':
+            flashDiv.style.backgroundColor = '#38c172';
+            break;
+        case 'warning':
+            flashDiv.style.backgroundColor = '#f6ad55';
+            break;
+        case 'error':
+            flashDiv.style.backgroundColor = '#e53e3e';
+            break;
+        default:
+            flashDiv.style.backgroundColor = '#4e54c8';
+    }
+
+    flashContainer.appendChild(flashDiv);
+
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        flashDiv.style.opacity = '0';
+        flashDiv.style.transform = 'translateX(20px)';
+        setTimeout(() => flashDiv.remove(), 500);
+    }, 4000);
+}
+
+    </script>
+    {% endblock %}
+
+</body>
+</html>

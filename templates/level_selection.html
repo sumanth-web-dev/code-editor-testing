@@ -1,0 +1,121 @@
+<!-- templates/level_selection.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Interview Level</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .levels {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+        .level-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            width: 30%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+            border-color: #11998e;
+        }
+        .level-card h3 {
+            margin-top: 0;
+        }
+        .level-card.beginner { background: #e3f2fd; }
+        .level-card.intermediate { background: #fff8e1; }
+        .level-card.advanced { background: #ffebee; }
+        form {
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #0f867e 0%, #33d96f 100%);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Interview Level</h1>
+        <p>Choose the difficulty level for your practice interview</p>
+        
+        <form action="/set_level" method="POST">
+            <div class="levels">
+                <label class="level-card beginner">
+                    <input type="radio" name="level" value="beginner" hidden>
+                    <h3>Beginner</h3>
+                    <p>0-2 years experience</p>
+                </label>
+                
+                <label class="level-card intermediate">
+                    <input type="radio" name="level" value="intermediate" hidden>
+                    <h3>Intermediate</h3>
+                    <p>2-5 years experience</p>
+                </label>
+                
+                <label class="level-card advanced">
+                    <input type="radio" name="level" value="advanced" hidden>
+                    <h3>Advanced</h3>
+                    <p>5+ years experience</p>
+                </label>
+            </div>
+            <button type="submit" class="btn">Continue</button>
+        </form>
+    </div>
+
+    <script>
+        document.querySelectorAll('.level-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.level-card').forEach(c => {
+                    c.style.borderColor = 'transparent';
+                });
+                this.style.borderColor = '#11998e';
+                this.querySelector('input').checked = true;
+            });
+        });
+    </script>
+</body>
+</html>

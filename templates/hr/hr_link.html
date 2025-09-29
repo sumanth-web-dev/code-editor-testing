@@ -1,0 +1,604 @@
+{% extends 'base/hr.html' %}
+
+{% block title %}Interview Links - HR App{% endblock %}
+
+{% block css %}
+{{ super() }}
+<style>
+    /* Global Body/Page Styling (if not already in base/hr.html) */
+    /* This might be in your base/hr.html, but included here for completeness */
+    body {
+        background-color: #f0f2f5; /* Light grey background */
+        font-family: 'Inter', sans-serif;
+        color: #333;
+    }
+
+    /* General containers for main content */
+    .analytics-content-wrapper {
+        max-width: 1200px; /* Wider content area */
+        margin: 40px auto; /* More margin */
+        padding: 25px; /* Increased padding */
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* More subtle shadow */
+    }
+
+    /* Page specific header/title within content wrapper */
+    .content-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+    .content-header h1 {
+        font-size: 2.2rem;
+        color: #0077B5; /* LinkedIn-esque blue */
+        margin-bottom: 10px;
+    }
+    .content-header p {
+        font-size: 1.1rem;
+        color: #555;
+    }
+
+    /* Demo Link Section */
+    .demo-link-container {
+        width: 100%; /* Full width within its parent */
+        margin-bottom: 30px; /* More space below */
+        display: flex;
+        align-items: center;
+        background: #e9f5ff; /* Light blue background */
+        padding: 15px 25px; /* More padding */
+        border-radius: 10px;
+        border: 1px solid #cce5ff; /* Light blue border */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .demo-link-input {
+        flex-grow: 1; /* Allows input to take available space */
+        border: none;
+        background: transparent;
+        font-size: 1rem; /* Slightly larger font */
+        color: #0077B5; /* LinkedIn-esque blue */
+        padding: 5px 0; /* Vertical padding */
+        white-space: nowrap; /* Prevent wrapping */
+        overflow: hidden; /* Hide overflow */
+        text-overflow: ellipsis; /* Add ellipsis for long text */
+    }
+    .demo-link-btn {
+        background: #0077B5; /* LinkedIn-esque blue */
+        color: #fff;
+        border: none;
+        padding: 10px 20px; /* Adjusted padding */
+        border-radius: 8px; /* Slightly more rounded */
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background 0.3s ease, transform 0.2s ease;
+        margin-left: 15px; /* Space from input */
+    }
+    .demo-link-btn:hover {
+        background: #005f93; /* Darker blue on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+    }
+
+    /* Table Styles */
+    .link-table {
+        width: 100%; /* Full width within content wrapper */
+        border-collapse: collapse;
+        font-size: 0.95rem; /* Slightly smaller font for table data */
+    }
+    .link-table th, .link-table td {
+        border: 1px solid #e0e0e0; /* Lighter border */
+        padding: 15px 18px; /* More padding */
+        text-align: left;
+    }
+    .link-table th {
+        background-color: #0077B5; /* LinkedIn-esque blue for header */
+        color: #fff;
+        font-weight: 600;
+        text-transform: uppercase; /* Uppercase header text */
+        letter-spacing: 0.5px;
+    }
+    .link-table td {
+        background-color: #fff;
+        color: #444;
+    }
+    .link-table tbody tr:nth-child(even) td {
+        background-color: #f9f9f9; /* Zebra striping */
+    }
+    .link-table tbody tr:hover td {
+        background-color: #eaf6ff; /* Highlight row on hover */
+    }
+
+    /* Action Buttons */
+    .action-btn {
+        background: #28a745; /* Green for general actions */
+        color: #fff;
+        border: none;
+        padding: 8px 14px; /* Adjusted padding */
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 8px; /* More space between buttons */
+        transition: background 0.3s ease, transform 0.2s ease;
+        font-size: 0.85rem; /* Slightly smaller font */
+        text-decoration: none; /* For <a> tags */
+        display: inline-flex; /* Align icon and text */
+        align-items: center;
+        gap: 5px;
+    }
+    .action-btn:hover {
+        background: #218838; /* Darker green on hover */
+        transform: translateY(-1px);
+    }
+    .delete-btn {
+        background: #dc3545; /* Red for delete */
+    }
+    .delete-btn:hover {
+        background: #c82333; /* Darker red on hover */
+    }
+    .email-btn {
+        background: #6c757d; /* Grey for email button */
+    }
+    .email-btn:hover {
+        background: #5a6268;
+    }
+
+    /* Link Input in table */
+    .link-table td input[type="text"] {
+        width: calc(100% - 10px); /* Adjust width for padding/margin */
+        border: 1px solid #e0e0e0; /* Visible border */
+        background: #f0f2f5; /* Light background */
+        color: #0077B5; /* LinkedIn-esque blue */
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        cursor: text; /* Show text cursor */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .no-links {
+        text-align: center;
+        margin: 50px auto;
+        font-size: 1.3em; /* Slightly larger */
+        color: #777;
+        padding: 30px;
+        background-color: #fefefe;
+        border-radius: 8px;
+        border: 1px dashed #ccc; /* Dashed border for emptiness */
+    }
+
+    /* Custom Modal Styles */
+    .custom-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .custom-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .custom-modal-content {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .custom-modal-overlay.active .custom-modal-content {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .custom-modal-content h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        color: #333;
+    }
+
+    .custom-modal-content p {
+        margin-bottom: 25px;
+        font-size: 1rem;
+        color: #555;
+        white-space: pre-wrap; /* Preserve newlines for confirm message */
+    }
+
+    .custom-modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .custom-modal-btn {
+        padding: 10px 25px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .custom-modal-btn.primary {
+        background-color: #0077B5; /* LinkedIn-esque blue */
+        color: #fff;
+    }
+    .custom-modal-btn.primary:hover {
+        background-color: #005f93;
+        transform: translateY(-1px);
+    }
+
+    .custom-modal-btn.secondary {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+    .custom-modal-btn.secondary:hover {
+        background-color: #c0c0c0;
+        transform: translateY(-1px);
+    }
+
+    .custom-modal-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    .custom-modal-icon.info { color: #0077B5; } /* LinkedIn-esque blue */
+    .custom-modal-icon.success { color: #28a745; }
+    .custom-modal-icon.warning { color: #ffc107; }
+    .custom-modal-icon.error { color: #dc3545; }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .analytics-content-wrapper {
+            margin: 20px;
+            padding: 15px;
+        }
+        .demo-link-container {
+            flex-direction: column; /* Stack elements on small screens */
+            align-items: stretch;
+            padding: 15px;
+        }
+        .demo-link-input {
+            width: 100%;
+            margin-bottom: 10px; /* Space between input and button */
+        }
+        .demo-link-btn {
+            width: 100%;
+            margin-left: 0;
+        }
+        .link-table {
+            display: block;
+            overflow-x: auto; /* Enable horizontal scrolling for tables */
+            white-space: nowrap; /* Prevent content from wrapping in table cells */
+        }
+        .link-table th, .link-table td {
+            min-width: 120px; /* Ensure columns are not too narrow */
+        }
+        .action-btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 8px;
+            margin-right: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    {% include 'base/_flashes.html' %} {# Assuming this renders Flask flash messages #}
+
+    <div class="analytics-content-wrapper">
+        <div class="content-header">
+            <h1>Manage Interview Links</h1>
+        </div>
+
+        <!-- Static Demo Link Copy Section -->
+        <div class="demo-link-container">
+            <input type="text" id="demoLinkInput" class="demo-link-input" value="{{ url_for('hr.demo_meeting', _external=True) }}" readonly disabled>
+            <button class="demo-link-btn" onclick="copyDemoLink()">📋 Copy Demo Link</button>
+        </div>
+
+        <!-- Interview Links Table -->
+        <div id="interview-table-container">
+            {# This content will be dynamically generated by Flask based on the 'interviews' variable #}
+            {% if interviews %}
+                <table class="link-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Job Title</th>
+                            <th>Date Created</th>
+                            <th>Interview Link</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for interview in interviews %}
+                        <tr>
+                            <td>{{ interview.company_name or "N/A" }}</td>
+                            <td>{{ interview.job_title or "N/A" }}</td>
+                            <td>{{ interview.created_at.strftime('%d-%m-%Y') if interview.created_at else "N/A" }}</td>
+                            <td>
+                                <input type="text" value="{{ url_for('hr.start_interview', link_id=interview.link_id, _external=True) }}" id="link-{{ interview.id }}" readonly  disabled>
+                            </td>
+                            <td>
+                                <button class="action-btn" onclick="copyLink('{{ interview.id }}')"> <i class="fas fa-clipboard" ></i> Copy</button>
+                                <a href="{{ url_for('hr.edit_interview', id=interview.id) }}" class="action-btn"><i class="fas fa-edit"></i> Edit</a>
+                                <button class="action-btn delete-btn" onclick="confirmDelete('{{ interview.id }}')"><i class="fas fa-trash-alt"></i> Delete</button>
+                                <button class="action-btn email-btn"
+                                    onclick="copyEmail(
+                                        '{{ interview.id }}',
+                                        '{{ interview.company_name or "N/A" }}',
+                                        '{{ interview.job_title or "N/A" }}',
+                                        '{{ interview.created_at.strftime('%d-%m-%Y') if interview.created_at else "N/A" }}',
+                                        '{{ interview.deadline.strftime('%d-%m-%Y') if interview.deadline else "" }}' {# Assuming 'deadline' attribute exists on interview object #}
+                                    )">
+                                    <i class="fas fa-envelope"></i> Email
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-links">No interviews created yet. Start by creating a new interview!</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Custom Alert/Confirm Modal Structure -->
+    <div id="custom-modal-overlay" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div id="custom-modal-icon" class="custom-modal-icon"></div>
+            <h3 id="custom-modal-title"></h3>
+            <p id="custom-modal-message"></p>
+            <div id="custom-modal-buttons" class="custom-modal-buttons">
+                <!-- Buttons will be injected by JS -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+<script>
+    // --- Custom Modal Functions (replacing native alert/confirm) ---//
+    const modalOverlay = document.getElementById('custom-modal-overlay');
+    const modalTitle = document.getElementById('custom-modal-title');
+    const modalMessage = document.getElementById('custom-modal-message');
+    const modalButtons = document.getElementById('custom-modal-buttons');
+    const modalIcon = document.getElementById('custom-modal-icon');
+
+    function showCustomAlert(message, type = 'info', title = 'Notification') {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        modalIcon.className = `custom-modal-icon ${type}`;
+        modalIcon.innerHTML = getIconForType(type);
+
+        modalButtons.innerHTML = '';
+        const okBtn = document.createElement('button');
+        okBtn.className = 'custom-modal-btn primary';
+        okBtn.textContent = 'OK';
+        okBtn.onclick = () => hideCustomModal();
+        modalButtons.appendChild(okBtn);
+
+        modalOverlay.classList.add('active');
+    }
+
+    function showCustomConfirm(message, onConfirm, onCancel, title = 'Confirm Action', type = 'warning') {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        modalIcon.className = `custom-modal-icon ${type}`;
+        modalIcon.innerHTML = getIconForType(type);
+
+        modalButtons.innerHTML = '';
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'custom-modal-btn secondary';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => {
+            hideCustomModal();
+            if (onCancel) onCancel();
+        };
+        modalButtons.appendChild(cancelBtn);
+
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = 'custom-modal-btn primary';
+        confirmBtn.textContent = 'Confirm';
+        confirmBtn.onclick = () => {
+            hideCustomModal();
+            if (onConfirm) onConfirm();
+        };
+        modalButtons.appendChild(confirmBtn);
+
+        modalOverlay.classList.add('active');
+    }
+
+    function hideCustomModal() {
+        modalOverlay.classList.remove('active');
+    }
+
+    function getIconForType(type) {
+        switch (type) {
+            case 'info': return '<i class="fas fa-info-circle"></i>';
+            case 'success': return '<i class="fas fa-check-circle"></i>';
+            case 'warning': return '<i class="fas fa-exclamation-triangle"></i>';
+            case 'error': return '<i class="fas fa-times-circle"></i>';
+            default: return '';
+        }
+    }
+
+    // --- Action Functions (now using custom modals) ---
+
+    function copyLink(id) {
+        const linkInput = document.getElementById('link-' + id);
+        const linkValue = linkInput.value;
+
+        navigator.clipboard.writeText(linkValue).then(() => {
+            showCustomAlert("Interview link copied to clipboard!", 'success', 'Copied!');
+        }).catch(err => {
+            console.error("Copy failed: ", err);
+            showCustomAlert("Failed to copy interview link. Please try manually.", 'error', 'Copy Failed');
+        });
+    }
+
+    function copyDemoLink() {
+        const demoInput = document.getElementById("demoLinkInput");
+        const demoValue = demoInput.value;
+
+        navigator.clipboard.writeText(demoValue).then(() => {
+            showCustomAlert("Demo link copied to clipboard!", 'success', 'Copied!');
+        }).catch(err => {
+            console.error("Copy failed: ", err);
+            showCustomAlert("Failed to copy demo link. Please try manually.", 'error', 'Copy Failed');
+        });
+    }
+
+
+    function confirmDelete(id) {
+        const message = "⚠️ Deleting this interview will permanently remove:\n\n" +
+                        "• This interview link\n" +
+                        "• All associated interview records\n" +
+                        "• Candidate answers and LLM evaluations\n" +
+                        "• (If no other interviews remain for the student, the student record too)\n" + 
+                        "• To Download your data GOTO Export CSV (click on it)\n\n" +
+                        "Are you sure you want to continue?";
+        
+        showCustomConfirm(message, () => {
+            // User confirmed delete
+            // In a real Flask app, this would be an AJAX call or a form submission
+            window.location.href = "/hr/delete_interview/" + id; // Actual delete action
+        }, () => {
+            // User cancelled delete
+            showCustomAlert("Delete operation cancelled.", 'info', 'Cancelled');
+        }, 'Confirm Deletion', 'warning');
+    }
+
+    function copyEmail(id, company, job, date, completionDate) { 
+        const interviewLink = document.getElementById('link-' + id).value;
+        const demoLink = document.getElementById('demoLinkInput').value;
+
+        const emailContent = `
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 20px auto; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+    <table cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+        <!-- Header -->
+        <tr>
+            <td style="padding: 25px 30px; background-color: #0077B5; color: #ffffff; text-align: center; border-bottom: 1px solid #005f93;">
+                <h1 style="font-size: 28px; margin: 0; font-weight: 600;">AI Interview Invitation</h1>
+                <p style="font-size: 16px; margin: 5px 0 0 0; opacity: 0.9;">Powered by Naventra AI</p>
+            </td>
+        </tr>
+        <!-- Candidate Summary -->
+        <tr>
+            <td style="padding: 30px; background-color: #f8f8f8;">
+                <h2 style="font-size: 22px; color: #0077B5; margin-top: 0; margin-bottom: 20px; text-align: center;">Your Interview Details at a Glance</h2>
+                <table cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: 600; width: 120px; color: #555;">Company:</td>
+                        <td style="padding: 8px 0; color: #333;">${company}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: 600; color: #555;">Position:</td>
+                        <td style="padding: 8px 0; color: #333;">${job}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: 600; color: #555;">Invitation Date:</td>
+                        <td style="padding: 8px 0; color: #333;">${date}</td>
+                    </tr>
+                    ${completionDate ? `
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: 700; color: #dc3545;">Complete By:</td>
+                        <td style="padding: 8px 0; color: #dc3545; font-weight: bold;">${completionDate}</td>
+                    </tr>
+                    ` : ''}
+                </table>
+            </td>
+        </tr>
+        <!-- Main Content -->
+        <tr>
+            <td style="padding: 30px; background-color: #ffffff;">
+                <p style="margin-bottom: 15px;">Dear Candidate,</p>
+                <p style="margin-bottom: 15px;">We are pleased to invite you to an AI-powered interview for the position of <strong>${job}</strong> at <strong>${company}</strong>.</p>
+                
+                <h3 style="font-size: 18px; color: #0077B5; margin-top: 25px; margin-bottom: 10px;">Get Ready for Your Interview:</h3>
+                <p style="margin-bottom: 5px;"><strong style="color: #0077B5;">🔗 Your Interview Link:</strong></p>
+                <p style="margin-bottom: 20px; word-break: break-all;"><a href="${interviewLink}" style="color: #0077B5; text-decoration: underline; font-weight: 500;">Click Here to Start Your Interview (One-Time Use)</a></p>
+                
+                <p style="margin-bottom: 5px;"><strong style="color: #28a745;">🎥 Demo Link for Practice:</strong></p>
+                <p style="margin-bottom: 30px; word-break: break-all;"><a href="${demoLink}" style="color: #28a745; text-decoration: underline; font-weight: 500;">Click Here for a Demo Session (Practice Environment)</a></p>
+                
+                <div style="font-size: 15px; background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                    <strong>Important Requirements:</strong>
+                    <ul style="margin: 10px 0 0 20px; padding: 0;">
+                        <li style="margin-bottom: 5px;">A stable internet connection.</li>
+                        <li style="margin-bottom: 5px;">A functional webcam and microphone.</li>
+                        <li>A quiet environment with no distractions.</li>
+                    </ul>
+                    We highly recommend using the Demo Link above to test your setup before the actual interview.
+                </div>
+
+                <div style="font-size: 15px; background-color: #ffe0e6; border-left: 5px solid #dc3545; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                    <strong>Security & Fair Assessment Notice:</strong>
+                    <ul style="margin: 10px 0 0 20px; padding: 0; color: #dc3545;">
+                        <li style="margin-bottom: 5px;">The AI interview is designed for a focused, uninterrupted session.</li>
+                        <li>Switching tabs or windows during the live interview will automatically terminate your session.</li>
+                        <li>Ensure you are prepared and ready before clicking the Interview Link.</li>
+                    </ul>
+                </div>
+
+            </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+            <td style="padding: 25px 30px; background-color: #f2f2f2; color: #555; text-align: center; font-size: 14px; border-top: 1px solid #e0e0e0;">
+                <p style="margin-top: 0; margin-bottom: 5px;">Best regards,</p>
+                <p style="margin-top: 0; margin-bottom: 0;"><strong>The Naventra HR Team</strong></p>
+                <p style="margin-top: 15px; font-size: 12px; color: #888;">
+                    This is an automated invitation. Please do not reply directly to this email.
+                </p>
+                <p style="margin-top: 10px; font-size: 12px; color: #888;">
+                    <a href="https://www.naventra.in/" style="color: #0077B5; text-decoration: none;">www.naventra.in</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>`;
+
+        // Use Clipboard API for richer HTML copy (modern approach)
+        const blob = new Blob([emailContent], { type: 'text/html' });
+        const item = new ClipboardItem({ "text/html": blob });
+        
+        navigator.clipboard.write([item]).then(() => {
+            showCustomAlert("HTML email content copied to clipboard for " + company + " - " + job + ". You can paste it into your email client.", 'success', 'Email Copied!');
+        }).catch(err => {
+            console.error('Failed to copy HTML email: ', err);
+            // Fallback for browsers that don't support ClipboardItem (older browsers/Firefox)
+            const tempInput = document.createElement("textarea");
+            document.body.appendChild(tempInput);
+            tempInput.value = emailContent; // Copy plain text (HTML string) if rich copy fails
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showCustomAlert("HTML email content copied to clipboard (plain text fallback due to browser limitations) for " + company + " - " + job + ". You may need to paste as 'plain text' or 'unformatted'.", 'warning', 'Copy Failed (Fallback)');
+        });
+    }
+</script>
+{% endblock %}

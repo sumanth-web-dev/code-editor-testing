@@ -1,0 +1,58 @@
+{% extends 'hr/hr_analytics.html' %}
+
+{% block title %}Interview Students - HR App{% endblock %}
+
+{% block css%}
+{{super()}}
+<style>
+        .view-btn {
+        background: #4e54c8;
+        color: #fff;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+<div style="text-align:center; margin:30px 0;">
+    <h2>Students for {{ interview.job_title }} at {{ interview.company_name }}</h2>
+    <p>Created: {{ interview.created_at.strftime('%d-%m-%Y') if interview.created_at else 'N/A' }}</p>
+</div>
+
+{% if student_data %}
+<table class="details-table">
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Total Questions</th>
+            <th>Average Score</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in student_data %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.phone }}</td>
+            <td>{{ student.total_questions }}</td>
+            <td>{{ student.avg_score }}</td>
+            <td>
+                <a class="view-btn" href="{{ url_for('hr.view_student_qas', interview_id=interview.id, student_id=student.id) }}">
+                    👁️ View Details
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="text-align:center;">No student records found for this interview.</p>
+{% endif %}
+{% endblock %}

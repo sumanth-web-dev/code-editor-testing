@@ -1,0 +1,43 @@
+{% extends 'hr/hr_analytics.html' %}
+
+{% block title %}Interview Students - HR App{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+
+<div style="text-align:center; margin:30px 0;">
+    <h2>Students for {{ interview.job_title }} at {{ interview.company_name }}</h2>
+    <p>Created: {{ interview.created_at.strftime('%d-%m-%Y') if interview.created_at else 'N/A' }}</p>
+</div>
+
+{% if qa_data %}
+<table class="details-table">
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>AI Answer</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for qa in qa_data %}
+        <tr>
+            <td>{{ qa.student_name }}</td>
+            <td>{{ qa.student_email }}</td>
+            <td>{{ qa.student_phone }}</td>
+            <td>{{ qa.question }}</td>
+            <td>{{ qa.answer }}</td>
+            <td>{{ qa.llm_answer }}</td>
+            <td>{{ qa.score }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="text-align:center;">No student records for this interview.</p>
+{% endif %}
+{% endblock %}

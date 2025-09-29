@@ -1,0 +1,102 @@
+{% extends 'base/hr.html' %}
+
+{% block title %}HR Settings{% endblock %}
+
+{% block css %}
+{{ super() }}
+<style>
+/* Page-specific styles */
+
+.summary-card {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+    animation: slideIn 1s ease;
+}
+
+.summary-card h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.filter-form label {
+    font-weight: 600;
+    color: #555;
+}
+
+.filter-form input[type="text"] {
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+}
+
+.filter-form input[type="text"]:focus {
+    outline: none;
+    border-color: #4e54c8;
+    box-shadow: 0 0 0 2px rgba(78, 84, 200, 0.2);
+}
+
+.filter-form button[type="submit"] {
+    padding: 14px 22px;
+    border: none;
+    border-radius: 8px;
+    background: #4e54c8;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-form button[type="submit"]:hover {
+    background: #3a41a3;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+<div class="summary-card">
+    <h2>⚙️ HR Settings</h2>
+
+    <form method="POST" action="{{ url_for('hr.hr_settings') }}" class="filter-form">
+
+        <label>Email (read-only)</label>
+        <input type="text" name="email" value="{{ current_user.email }}" readonly>
+
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ hr.phone or '' }}">
+
+        <label>Company Name</label>
+        <input type="text" name="company_name" value="{{ hr.company_name or '' }}">
+
+        <button type="submit">Update Settings</button>
+    </form>
+</div>
+{% endblock %}

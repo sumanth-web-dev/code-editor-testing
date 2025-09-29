@@ -1,0 +1,260 @@
+{% extends 'base/hr.html' %}
+
+{% block css %}
+{{super()}}
+<style>
+    /* Remove body styles as they are defined in the base or can be overridden */
+    /* Remove h2 styles as they are defined in the base or can be overridden */
+
+    .summary-card {
+        max-width: 95%;
+        margin: 2rem auto 0 auto; /* Adjusted margin to give space after the nav bar */
+        background: #fff;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+        animation: slideIn 1.4s ease;
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        width: 100%;
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        animation: fadeIn 1s ease;
+    }
+
+    th, td {
+        padding: 14px 18px;
+        text-align: left;
+    }
+
+    th {
+        background: #4e54c8;
+        color: #fff;
+        font-size: 1em;
+        border: none;
+        /* Apply border-radius only to top corners for the first and last th */
+        border-radius: 0;
+    }
+
+    /* Specific border-radius for first and last header cells */
+    th:first-child {
+        border-top-left-radius: 8px;
+    }
+
+    th:last-child {
+        border-top-right-radius: 8px;
+    }
+
+    tr {
+        background: #ffffff;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    tr:hover {
+        background: #f6f8fc;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+    }
+
+    td {
+        vertical-align: top;
+        font-size: 0.95em;
+        border: none;
+    }
+
+    /* Add border-radius to the first and last cells of the first and last table rows for rounded corners */
+    tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+
+    tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+
+    tr:nth-child(even) {
+        background: #fafafa;
+    }
+
+    .action-links a, td button {
+        display: inline-block;
+        background: #fff;
+        color: #4e54c8;
+        padding: 8px 18px;
+        border-radius: 24px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin: 4px 2px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .action-links a:hover, td button:hover {
+        background: #4e54c8;
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    td button {
+        background: #fff;
+        color: #c00;
+        border: 1px solid #c00;
+    }
+
+    td button:hover {
+        background: #c00;
+        color: #fff;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    /* Filter form styling */
+    .filter-form {
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center; /* Center the filter elements */
+    }
+
+    .filter-form select,
+    .filter-form input[type="text"] {
+        padding: 10px 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        flex: 1;
+        min-width: 150px; /* Ensure inputs don't become too small */
+    }
+
+    .filter-form button[type="submit"] {
+        padding: 10px 22px;
+        border: none;
+        border-radius: 6px;
+        background: #4e54c8;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .filter-form button[type="submit"]:hover {
+        background: #3a41a3;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(40px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+        /* body padding removed as it's handled by base template and summary-card margin */
+        h2 {
+            font-size: 2em;
+        }
+        th, td {
+            font-size: 0.9em;
+            padding: 12px;
+        }
+        .filter-form {
+            flex-direction: column; /* Stack filter elements on small screens */
+            align-items: stretch;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+<div class="summary-card">
+    <h2>📊 HR Interview Summary</h2>
+
+    <!-- Filter Form (only email search) -->
+    <form method="GET" action="{{ url_for('hr.hr_summary') }}" class="filter-form">
+        <input type="text" name="email" placeholder="Search HR Email" value="{{ request.args.get('email', '') }}">
+        <button type="submit">Filter</button>
+    </form>
+
+    <!-- Interview Table -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Link ID</th>
+                    <th>Type</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Job Desc</th>
+                    <th>Custom Qs</th>
+                    <th>HR Email</th>
+                    <th>Created</th>
+                    <th>Used</th>
+                    <th>Q&A</th>
+                    <th>Student</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in interviews %}
+                <tr>
+                    <td>{{ item.interview.link_id }}</td>
+                    <td>{{ item.interview.type }}</td>
+                    <td>{{ item.interview.job_title or '—' }}</td>
+                    <td>{{ item.interview.company_name or '—' }}</td>
+                    <td>{{ item.interview.job_desc or '—' }}</td>
+                    <td>{{ item.interview.custom_questions or '—' }}</td>
+                    <td>{{ item.interview.hr.email if item.interview.hr else 'N/A' }}</td>
+                    <td>{{ item.interview.created_at.strftime('%Y-%m-%d %H:%M') if item.interview.created_at else '—' }}</td>
+                    <td>{{ 'Yes' if item.interview.used else 'No' }}</td>
+                    <td>
+                        {% if item.q_and_a %}
+                        <ul style="padding-left: 16px; margin: 0;">
+                            {% for qa in item.q_and_a %}
+                            <li>
+                                <strong>Q:</strong> {{ qa.text }}<br>
+                                <strong>A:</strong> {{ qa.answer_text or 'Not answered' }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        No Q&A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.interview.student %}
+                        {{ item.interview.student.name }}<br>
+                        {{ item.interview.student.email }}<br>
+                        {{ item.interview.student.phone or '' }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    <td class="action-links">
+                        <a href="{{ url_for('hr.edit_interview', link_id=item.interview.link_id) }}">Edit</a>
+                        <form action="{{ url_for('hr.delete_interview', link_id=item.interview.link_id) }}" method="POST" style="display:inline;">
+                            {{ csrf_token() }}
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this interview?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if not interviews %}
+        <p style="text-align: center; padding: 1rem;">No interviews found.</p>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

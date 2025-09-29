@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview Practice Session</title>
+  <style>
+        :root {
+            --ai-color: #4e54c8;
+            --user-color: #11998e;
+            --bg-color: #f5f7fa;
+            --surface-color: #ffffff;
+            --shadow-light: rgba(0,0,0,0.05);
+            --shadow-dark: rgba(0,0,0,0.1);
+            --text-primary: #333;
+            --text-secondary: #777;
+        }
+        body {
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-color);
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        /* New 3-Column Page Layout */
+        .container {
+            display: grid;
+            /* Key change: 3 equal columns for content */
+            grid-template-columns: 1fr 1fr 1fr; 
+            grid-template-rows: 7vh 1fr; /* Sleek header and the main content area */
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            /* Key change: Span across all 3 columns */
+            grid-column: 1 / 4; 
+            background: var(--surface-color);
+            border-radius: 12px;
+            padding: 0 25px;
+            box-shadow: 0 4px 12px var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h2{
+            font-size: 1.5em;
+        }
+
+        .video-container {
+            background: black;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 25px var(--shadow-dark);
+            height: 100%; /* Fill the grid cell height */
+            box-sizing: border-box;
+        }
+
+        /* Explicitly place each item in its column */
+        .video-container.ai {
+            grid-column: 1;
+            grid-row: 2;
+            border: 3px solid var(--ai-color);
+        }
+        .video-container.user {
+            grid-column: 2;
+            grid-row: 2;
+            border: 3px solid var(--user-color);
+        }
+        
+        .transcript-container {
+            grid-column: 3;
+            grid-row: 2;
+            background: var(--surface-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 12px var(--shadow-light);
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Fill the grid cell height */
+            box-sizing: border-box;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .name-tag {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .transcript-header {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transcript-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px; /* space for scrollbar */
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 15px;
+            max-width: 95%;
+            position: relative;
+            animation: fadeIn 0.4s ease-in-out;
+            word-wrap: break-word;
+        }
+        .message.ai {
+            background: #f0f4ff;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        .message.user {
+            background: #e6f7f5;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .ai .message-header { color: var(--ai-color); }
+        .user .message-header { color: var(--user-color); }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 10px;
+            background: var(--ai-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .progress {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .speaking-glow {
+            animation: glowPulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 10px rgba(78, 84, 200, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(78, 84, 200, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(78, 84, 200, 0.4); }
+        }
+        .user.speaking-glow {
+             animation-name: userGlowPulse;
+        }
+        @keyframes userGlowPulse {
+             0% { box-shadow: 0 0 10px rgba(17, 153, 142, 0.4); }
+             50% { box-shadow: 0 0 25px rgba(17, 153, 142, 0.8); }
+             100% { box-shadow: 0 0 10px rgba(17, 153, 142, 0.4); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Hide original controls and buttons for this example */
+        .controls, button {
+            display: none;
+        }
+
+        /* Responsive Design Adjustments */
+        @media (max-width: 1024px) {
+            body {
+                overflow: auto; /* Allow scrolling on smaller devices */
+                height: auto;
+            }
+            .container {
+                grid-template-columns: 1fr; /* Single column layout */
+                grid-template-rows: auto auto auto auto; /* Header, AI video, User video, transcript */
+                height: auto;
+                padding: 15px;
+            }
+            .header {
+                grid-row: 1;
+                grid-column: 1;
+            }
+            .video-container.ai {
+                grid-row: 2;
+                grid-column: 1;
+                height: 350px;
+            }
+            .video-container.user {
+                grid-row: 3;
+                grid-column: 1;
+                height: 350px;
+            }
+            .transcript-container {
+                grid-row: 4;
+                grid-column: 1;
+                height: 50vh; /* Assign a fixed height */
+            }
+        }
+
+        @media (max-width: 600px) {
+             .header h2 { font-size: 1.2em; }
+            .video-container.ai, .video-container.user {
+                height: 250px;
+            }
+            .transcript-container {
+                height: 60vh;
+            }
+        }
+
+button{
+    display: none;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>AI Interview Practice - {{ level|capitalize }} Level</h2>
+            <div class="job-desc">HI, ALL THE BEST</div>
+        </div>
+        
+        <div class="video-container ai">
+            <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Naventra AI" style="width:100%; height:100%; object-fit:cover;">
+            <div class="name-tag">Naventra AI</div>
+        </div>
+
+        
+        <div class="video-container user">
+            <video id="user-camera" autoplay playsinline></video>
+            <div class="name-tag">You</div>
+        </div>
+        
+        <div class="transcript-container">
+            <div class="transcript-header">Interview Transcript</div>
+            <div class="transcript-content" id="transcript">
+                </div>
+            <div class="progress" id="progress">Question 1 of 5</div>
+            <div class="controls">
+                <button class="btn btn-finish" id="finish-btn">Finish Interview</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const transcriptEl = document.getElementById('transcript');
+        const progressEl = document.getElementById('progress');
+        const finishBtn = document.getElementById('finish-btn');
+        let recognition;
+        let currentQuestionIndex = 0;
+        let totalQuestions = 0;
+        let userName = "You";
+        let aiSpeakingMessageElement = null; // To hold the AI's message element while it's speaking
+        let recognitionErrorShown = false; // Only show error once per question
+
+        // Wait for user to grant audio/video permissions before starting
+        function requestMediaPermissions() {
+            return navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then(stream => {
+                    document.getElementById('user-camera').srcObject = stream;
+                    return true;
+                })
+                .catch(err => {
+                    alert("Please allow access to your camera and microphone to use the interview feature.\nError: " + err.message);
+                    return false;
+                });
+        }
+
+        function speakText(text, onComplete) {
+            // *** FIX APPLIED HERE ***
+            // Cancel any previous speech synthesis to prevent the queue from getting stuck.
+            window.speechSynthesis.cancel();
+
+            const synth = window.speechSynthesis;
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            utter.rate = 1.0;
+            utter.pitch = 1.0;
+            utter.voice = window.speechSynthesis.getVoices().find(v => v.name === 'Google US English');
+
+            const aiContainer = document.querySelector('.video-container.ai');
+            aiContainer.classList.add('speaking-glow');
+
+            // Add an initial message for AI speaking
+            aiSpeakingMessageElement = addMessage('Naventra AI', '', 'ai', true); // true for isThinking/speaking indicator
+
+            utter.onboundary = (event) => {
+                if (aiSpeakingMessageElement) {
+                    const currentText = text.substring(0, event.charIndex + event.charLength);
+                    aiSpeakingMessageElement.querySelector('.message-text').textContent = currentText;
+                    transcriptEl.scrollTop = transcriptEl.scrollHeight;
+                }
+            };
+
+            utter.onend = () => {
+                aiContainer.classList.remove('speaking-glow');
+                if (aiSpeakingMessageElement) {
+                    aiSpeakingMessageElement.querySelector('.message-text').textContent = text;
+                    const statusIndicator = aiSpeakingMessageElement.querySelector('.status-indicator');
+                    if (statusIndicator) {
+                        statusIndicator.remove();
+                    }
+                    aiSpeakingMessageElement = null;
+                }
+                if (onComplete) onComplete();
+            };
+
+            synth.speak(utter);
+        }
+
+        // Start camera
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                document.getElementById('user-camera').srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing camera: ", err);
+            });
+        
+        // Initialize interview
+        function startInterview() {
+            // CORRECTED URL: Added blueprint prefix
+            fetch('/student/get_next_question')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'complete') {
+                        endInterview();
+                        return;
+                    }
+                    currentQuestionIndex = data.index;
+                    totalQuestions = data.total;
+                    updateProgress();
+                    // Speak the AI question and then start listening
+                    speakText(data.question, startListening);
+                })
+                .catch(err => {
+                    console.error("Error starting interview:", err);
+                    alert("Could not start the interview. Please check the console for errors.");
+                });
+        }
+        
+        // Add message to transcript
+        function addMessage(sender, text, type, isThinking = false) {
+            const messageEl = document.createElement('div');
+            messageEl.classList.add('message', type);
+            
+            const headerEl = document.createElement('div');
+            headerEl.classList.add('message-header');
+            headerEl.textContent = sender;
+            
+            if (isThinking) {
+                const statusEl = document.createElement('div');
+                statusEl.classList.add('status-indicator');
+                headerEl.appendChild(statusEl);
+            }
+            
+            messageEl.appendChild(headerEl);
+            
+            const textEl = document.createElement('div');
+            textEl.classList.add('message-text');
+            textEl.textContent = text;
+            messageEl.appendChild(textEl);
+            
+            transcriptEl.appendChild(messageEl);
+            transcriptEl.scrollTop = transcriptEl.scrollHeight;
+            return messageEl; // Return the created message element
+        }
+        
+        // Update progress indicator
+        function updateProgress() {
+            progressEl.textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+        }
+        
+        // Start speech recognition
+        function startListening() {
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+            recognitionErrorShown = false;
+            addMessage(userName, '', 'user', true);
+            const userContainer = document.querySelector('.video-container.user');
+            userContainer.classList.add('speaking-glow');
+
+            recognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                const messages = transcriptEl.querySelectorAll('.message.user');
+                const lastMessage = messages[messages.length - 1];
+                lastMessage.querySelector('.message-text').textContent = transcript;
+                transcriptEl.scrollTop = transcriptEl.scrollHeight;
+            };
+
+            recognition.onend = () => {
+                const messages = transcriptEl.querySelectorAll('.message.user');
+                const lastMessage = messages[messages.length - 1];
+                const userAnswer = lastMessage.querySelector('.message-text').textContent;
+                const statusIndicator = lastMessage.querySelector('.status-indicator');
+                if (statusIndicator) {
+                    statusIndicator.remove();
+                }
+                userContainer.classList.remove('speaking-glow');
+                // Wait 3 seconds before submitting answer and letting AI ask next question
+                setTimeout(() => {
+                    submitAnswer(userAnswer);
+                }, 3000);
+            };
+
+            recognition.onerror = (event) => {
+                if (!recognitionErrorShown) {
+                    recognitionErrorShown = true;
+                    const userContainer = document.querySelector('.video-container.user');
+                    userContainer.classList.remove('speaking-glow');
+                    addMessage(userName, "Error recognizing speech. Please try again.", 'user');
+                }
+                // Do not auto-restart listening, let user try again by refreshing or going back
+            };
+
+            recognition.start();
+        }
+        
+        // Submit answer to server
+        function submitAnswer(answer) {
+            // CORRECTED URL: Added blueprint prefix
+            fetch('/student/submit_answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ answer, index: currentQuestionIndex })
+            })
+            .then(() => {
+                // Get next question after answer is submitted
+                // CORRECTED URL: Added blueprint prefix
+                fetch('/student/get_next_question')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'complete') {
+                            endInterview();
+                            return;
+                        }
+                        currentQuestionIndex = data.index;
+                        totalQuestions = data.total;
+                        updateProgress();
+                        // Wait 3 seconds before AI asks next question
+                        setTimeout(() => {
+                            speakText(data.question, startListening);
+                        }, 3000);
+                    });
+            });
+        }
+        
+        // End interview and show report
+        function endInterview() {
+            showRedirectAnimation();
+            // CORRECTED URL: Changed to the correct report generation endpoint
+            fetch('/student/report')
+                .then(res => res.json())
+                .then(data => {
+                    setTimeout(() => {
+                        // CORRECTED REDIRECT: Go to student dashboard as no report page exists
+                        window.location.href = '/student/dashboard';
+                    }, 1200); // Show animation for at least 1.2s
+                });
+        }
+        
+        // Show fullscreen redirect animation
+        function showRedirectAnimation() {
+            let overlay = document.createElement('div');
+            overlay.id = 'redirect-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = 0;
+            overlay.style.left = 0;
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.background = 'rgba(255,255,255,0.85)';
+            overlay.style.display = 'flex';
+            overlay.style.flexDirection = 'column';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = 9999;
+            overlay.innerHTML = `
+                <div class="loading" style="width:48px;height:48px;margin-bottom:20px;"></div>
+                <div style="font-size:1.2em;color:#4e54c8;font-weight:bold;">Preparing your report...</div>
+            `;
+            document.body.appendChild(overlay);
+        }
+        
+        // Security: Detect tab/window switching and redirect
+		let malpracticeDetected = false;
+		function handleMalpractice() {
+			if (!malpracticeDetected) {
+				malpracticeDetected = true;
+				// Stop AI speaking immediately
+				if (window.speechSynthesis) {
+					window.speechSynthesis.cancel();
+				}
+				// Show summary overlay before redirect
+				showMalpracticeSummary();
+				// Store a flag in sessionStorage so the report page can show the message
+				sessionStorage.setItem('malpractice', '1');
+				setTimeout(() => {
+                    // CORRECTED REDIRECT: Go to student dashboard
+					window.location.href = '/student/dashboard';
+				}, 3500); // Show summary for 3.5s before redirect
+			}
+		}
+
+		function showMalpracticeSummary() {
+			let overlay = document.createElement('div');
+			overlay.id = 'malpractice-summary';
+			overlay.style.position = 'fixed';
+			overlay.style.top = 0;
+			overlay.style.left = 0;
+			overlay.style.width = '100vw';
+			overlay.style.height = '100vh';
+			overlay.style.background = 'rgba(255,255,255,0.95)';
+			overlay.style.display = 'flex';
+			overlay.style.flexDirection = 'column';
+			overlay.style.justifyContent = 'center';
+			overlay.style.alignItems = 'center';
+			overlay.style.zIndex = 10000;
+			overlay.innerHTML = `
+				<div style="font-size:2em;color:#ff5252;font-weight:bold;margin-bottom:20px;">Malpractice Detected</div>
+				<div style="font-size:1.1em;color:#333;max-width:400px;text-align:center;">
+					The interview session ended because we detected that you switched tabs or windows during the interview.<br><br>
+					For a fair and realistic practice, please stay focused in the interview window throughout the session.
+				</div>
+				<div style="margin-top:30px;font-size:1em;color:#888;">Redirecting...</div>
+			`;
+			document.body.appendChild(overlay);
+		}
+
+		document.addEventListener('visibilitychange', function() {
+			if (document.hidden) {
+				handleMalpractice();
+			}
+		});
+		window.addEventListener('blur', function() {
+			handleMalpractice();
+		});
+
+        // Start the interview when page loads
+        window.onload = () => {
+            requestMediaPermissions().then(granted => {
+                if (granted) {
+                    setTimeout(startInterview, 1000);
+                } else {
+                    alert('Cannot start interview without camera and microphone access.');
+                }
+            });
+        };
+        
+        // Finish button handler
+        finishBtn.addEventListener('click', endInterview);
+    </script>
+</body>
+</html>

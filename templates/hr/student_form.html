@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Candidate Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f1f3f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: #ffffff;
+            padding: 30px 35px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333333;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background-color: #4a90e2;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #357abd;
+        }
+
+        /* Flash message styles */
+#flash-messages {
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.flash {
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.flash-success {
+  background-color: #38a169; /* green */
+}
+
+.flash-error {
+  background-color: #e53e3e; /* red */
+}
+
+.flash-warning {
+  background-color: #dd6b20; /* orange */
+}
+
+.flash-info {
+  background-color: #3182ce; /* blue */
+}
+
+    </style>
+</head>
+<body>
+ {% include 'base/_flashes.html' %}
+
+<div class="form-container">
+    <form method="post" onsubmit="return validateForm()">
+        <h2>Candidate Details</h2>
+
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required>
+        <div id="nameError" class="error-msg">Name is required.</div>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+        <div id="emailError" class="error-msg">Enter a valid email address.</div>
+
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone" id="phone" required>
+        <div id="phoneError" class="error-msg">Phone must be 10 digits.</div>
+
+        <button type="submit">Start Interview</button>
+    </form>
+</div>
+
+<script>
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
+
+    const nameError = document.getElementById("nameError");
+    const emailError = document.getElementById("emailError");
+    const phoneError = document.getElementById("phoneError");
+
+    nameInput.addEventListener("input", () => {
+        if (nameInput.value.trim() === "") {
+            nameError.style.display = "block";
+        } else {
+            nameError.style.display = "none";
+        }
+    });
+
+    emailInput.addEventListener("input", () => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailInput.value.trim())) {
+            emailError.style.display = "block";
+        } else {
+            emailError.style.display = "none";
+        }
+    });
+
+    phoneInput.addEventListener("input", () => {
+        if (!/^\d{10}$/.test(phoneInput.value.trim())) {
+            phoneError.style.display = "block";
+        } else {
+            phoneError.style.display = "none";
+        }
+    });
+
+    function validateForm() {
+        let valid = true;
+
+        if (nameInput.value.trim() === "") {
+            nameError.style.display = "block";
+            valid = false;
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailInput.value.trim())) {
+            emailError.style.display = "block";
+            valid = false;
+        }
+
+        if (!/^\d{10}$/.test(phoneInput.value.trim())) {
+            phoneError.style.display = "block";
+            valid = false;
+        }
+
+        return valid;
+    }
+</script>
+
+</body>
+</html>
+
+
+

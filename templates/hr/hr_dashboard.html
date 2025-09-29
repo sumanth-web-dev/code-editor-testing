@@ -1,0 +1,342 @@
+{% extends 'base/hr.html' %}
+
+{% block title %}Create Interview - HR App{% endblock %}
+
+{% block css %}
+    {{ super() }} {# This line is important to keep styles from base/hr.html #}
+    <style>
+        /* Specific styles for the "Select Interview Level" page */
+        /* Note: Some body styles like background are inherited/overridden from base/hr.html */
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            text-align: center;
+            width: 85%;
+            max-width: 800px;
+            margin: 30px auto;
+            /* Adjust margin-top to play nicely with the base template's <hr> */
+            margin-top: 0px; 
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em; /* Ensure it scales well with other headings */
+            font-weight: 700; /* Ensure consistency with base font-weights */
+        }
+
+        .levels {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            flex-wrap: wrap; /* Added for responsiveness */
+            gap: 20px; /* Space between level cards */
+        }
+
+        .level-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            width: calc(33.33% - 14px); /* Account for gap */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-sizing: border-box; /* Include padding/border in width calculation */
+        }
+
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+            border-color: #11998e;
+        }
+
+        .level-card h3 {
+            margin-top: 0;
+            color: #11998e; /* Make headings in cards stand out */
+        }
+
+        .level-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .level-card.beginner { background: #e3f2fd; }
+        .level-card.intermediate { background: #fff8e1; }
+        .level-card.advanced { background: #ffebee; }
+
+        /* Form styling */
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 48%; /* For two columns */
+        }
+
+        form label {
+            font-weight: 600;
+            display: block;
+            text-align: left;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            border-radius: 14px;
+            border: 1.8px solid #ccc;
+            background: #f9f9f9;
+            box-sizing: border-box;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        input[type="text"]:hover,
+        input[type="email"]:hover,
+        input[type="number"]:hover,
+        textarea:hover,
+        select:hover {
+            background: #fff;
+            border-color: #bbb;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #11998e;
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 6px rgba(17, 153, 142, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none; /* Remove default arrow */
+            -webkit-appearance: none; /* For Safari */
+            -moz-appearance: none; /* For Firefox */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%2311998e' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px 12px;
+            width: 100%;
+            height: 50%;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #0f867e 0%, #33d96f 100%);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+            transform: translateY(-2px);
+        }
+
+        small {
+            display: block;
+            color: #888;
+            margin-top: 4px;
+        }
+        
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .levels {
+                flex-direction: column;
+                gap: 14px;
+            }
+            .level-card {
+                width: 100%;
+            }
+            .form-group {
+                min-width: 100%; /* Stack form groups on small screens */
+            }
+        }
+        .header-section {
+    text-align: center;
+    margin-bottom: 30px;
+    animation: fadeIn 1.2s ease;
+}
+
+.header-section h1 {
+    color: #11998e;
+    font-size: 2.4em;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.header-section p {
+    color: #555;
+    font-size: 1.1em;
+    margin: 0 auto;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+    </style>
+{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+
+
+    <div class="container">
+        <div class="header-section">
+            <h1>Select Interview Level</h1>
+            <p>Choose the difficulty level for Employee interview</p>
+        </div>
+
+        <form method="POST">
+            <div class="levels">
+                <label class="level-card beginner">
+                    <input type="radio" name="level" value="beginner" hidden>
+                    <h3>Beginner</h3>
+                    <p>0-2 years experience</p>
+                </label>
+                <label class="level-card intermediate">
+                    <input type="radio" name="level" value="intermediate" hidden>
+                    <h3>Intermediate</h3>
+                    <p>2-5 years experience</p>
+                </label>
+                <label class="level-card advanced">
+                    <input type="radio" name="level" value="advanced" hidden>
+                    <h3>Advanced</h3>
+                    <p>5+ years experience</p>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="interview_type">Interview Type</label>
+                    <select name="interview_type" id="interview_type" required>
+                        <option value="jd">Job Description Base(JD)</option>
+                        <option value="custom">Custom Questions</option>
+                        <option value="both">Both</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="num_questions">No. of Questions (1-20)</label>
+                    <input type="number" name="num_questions" id="num_questions" placeholder="5" min="1" max="20">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <!-- <div class="form-group">
+                    <label for="hr_email">HR Email (optional)</label>
+                    <input type="email" name="hr_email" id="hr_email" placeholder="hr@example.com">
+                </div> -->
+
+                <div class="form-group">
+                    <label for="custom_questions">Custom Questions (comma separated)</label>
+                    <input type="text" name="custom_questions" id="custom_questions" placeholder="e.g. What is Python?, Explain OOPs...">
+                </div>
+            </div>
+
+             <div class="form-row">
+                <div class="form-group">
+                    <label for="job_title">Job Title</label>
+                    <input type="text" name="job_title" id="job_title" placeholder="e.g. Senior Software Engineer" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="company_name">Company Name</label>
+                    <input type="text" name="company_name" id="company_name" placeholder="e.g. Tech Innovations Inc." required>
+                </div>
+             </div>
+            <div class="form-group">
+                <label for="job_desc">Job Description</label>
+                <textarea name="job_desc" id="job_desc" rows="3" placeholder="Enter job description here..." ></textarea>
+            </div>
+
+            
+
+            <button type="submit" class="btn">Continue</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {# This is where page-specific JavaScript belongs #}
+    <script>
+        document.querySelectorAll('.level-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove active styling from all cards
+                document.querySelectorAll('.level-card').forEach(c => {
+                    c.style.borderColor = 'transparent';
+                });
+                // Add active styling to the clicked card
+                this.style.borderColor = '#11998e';
+                // Check the hidden radio button within the clicked card
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Optional: Pre-select a level or handle initial state if needed
+        document.addEventListener('DOMContentLoaded', () => {
+            // Example: If you want to default select the first option or keep a selection on page reload
+            const firstLevelCard = document.querySelector('.level-card input[type="radio"][value="beginner"]');
+            if (firstLevelCard && !document.querySelector('.level-card input[type="radio"]:checked')) {
+                firstLevelCard.checked = true;
+                firstLevelCard.closest('.level-card').style.borderColor = '#11998e';
+            }
+        });
+
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+    const interviewType = document.getElementById('interview_type').value;
+    const jobDesc = document.getElementById('job_desc').value.trim();
+    const customQuestions = document.getElementById('custom_questions').value.trim();
+
+    let errorMessage = '';
+
+    if (interviewType === 'jd' && jobDesc === '') {
+        errorMessage = 'Job Description is required for JD-based interviews.';
+    }
+    if (interviewType === 'custom' && customQuestions === '') {
+        errorMessage = 'Custom Questions field is required for Custom-based interviews.';
+    }
+    if (interviewType === 'both' && (jobDesc === '' || customQuestions === '')) {
+        errorMessage = 'Both Job Description and Custom Questions are required for this type.';
+    }
+
+    if (errorMessage) {
+        e.preventDefault();
+        alert(errorMessage);
+    }
+});
+
+    </script>
+{% endblock %}

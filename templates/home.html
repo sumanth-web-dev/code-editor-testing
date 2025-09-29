@@ -1,0 +1,73 @@
+<!-- templates/home.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Interview Practice</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: #4e54c8;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.25);
+            background: #3f43b3;
+        }
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        .feature {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            width: 28%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI-Powered Interview Practice</h1>
+        <div class="features">
+            <div class="feature">💬 Real-time Conversation</div>
+            <div class="feature">📊 Performance Report</div>
+            <div class="feature">📧 Email Summary</div>
+        </div>
+        <form action="/start_practice" method="POST">
+            <button type="submit" class="btn">Start Practice Interview</button>
+        </form>
+    </div>
+</body>
+</html>

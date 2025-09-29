@@ -1,0 +1,76 @@
+{% extends 'base/hr.html' %}
+
+{% block title %}Interview Details - HR App{% endblock %}
+
+{% block css %}
+{{ super() }}
+<style>
+    .details-table {
+        width: 90%;
+        margin: 30px auto;
+        border-collapse: collapse;
+        font-family: 'Inter', sans-serif;
+    }
+    .details-table th, .details-table td {
+        border: 1px solid #ddd;
+        padding: 14px;
+        text-align: left;
+    }
+    .details-table th {
+        background-color: #4e54c8;
+        color: #fff;
+    }
+    .details-table td {
+        background-color: #fff;
+        color: #333;
+    }
+    .view-btn {
+        background: #4e54c8;
+        color: #fff;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+
+<div style="text-align:center; margin:30px 0;">
+    <h2>Interview Details</h2>
+</div>
+
+{% if interviews %}
+<table class="details-table">
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>Job Title</th>
+            <th>Date Created</th>
+            <th>No. of Students Attended</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for interview in interviews %}
+        <tr>
+            <td>{{ interview.company }}</td>
+            <td>{{ interview.job_title }}</td>
+            <td>{{ interview.created }}</td>
+            <td>{{ interview.student_count }}</td>
+            <td>
+                <a class="view-btn" href="{{ url_for('hr.view_interview_student_summary', interview_id=interview.id) }}">
+    👁️ View Students
+</a>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="text-align:center;">No interview records found.</p>
+{% endif %}
+{% endblock %}

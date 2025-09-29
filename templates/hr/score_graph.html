@@ -1,0 +1,80 @@
+{% extends 'base/hr.html' %}
+
+{% block title %}Score Distribution - HR App{% endblock %}
+
+{% block css %}
+<style>
+    .graph-wrapper {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 16px;
+        padding: 36px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        animation: fadeIn 1s ease;
+    }
+
+    .graph-wrapper h2 {
+        font-size: 2rem;
+        margin-bottom: 24px;
+        text-align: center;
+        color: #222;
+    }
+
+    canvas {
+        margin-top: 20px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'base/_flashes.html' %}
+
+<div class="graph-wrapper">
+    <h2>📊 Score Distribution (Count vs. Score)</h2>
+    <canvas id="distributionChart" width="600" height="300"></canvas>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('distributionChart').getContext('2d');
+    const labels = {{ labels | tojson | safe }};
+    const counts = {{ counts | tojson | safe }};
+
+    const distributionChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of Answers',
+                data: counts,
+                backgroundColor: '#11998e'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Score'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

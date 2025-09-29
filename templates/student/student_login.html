@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome Students</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #43cea2, #185a9d);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.13);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        h2 {
+            color: #185a9d;
+            margin-bottom: 24px;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        td {
+            padding: 16px 24px;
+        }
+        button {
+            background: #185a9d;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 7px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #43cea2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to the Student Portal</h2>
+        <table>
+            <tr>
+                <td><button onclick="location.href='/student/register'">Register</button></td>
+                <td><button onclick="location.href='/student/login'">Login</button></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

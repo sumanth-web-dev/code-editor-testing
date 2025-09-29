@@ -1,0 +1,269 @@
+{% extends 'base/hr.html' %}
+
+{% block title %}Edit Interview - HR App{% endblock %}
+
+{% block css %}
+{{ super() }}
+<style>
+.container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    padding: 40px;
+    text-align: center;
+    width: 85%;
+    max-width: 800px;
+    margin: 30px auto;
+    margin-top: 0px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2em;
+    font-weight: 700;
+}
+
+.levels {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.level-card {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    width: calc(33.33% - 14px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+}
+
+.level-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+    border-color: #11998e;
+}
+
+.level-card h3 {
+    margin-top: 0;
+    color: #11998e;
+}
+
+.level-card p {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.level-card.beginner { background: #e3f2fd; }
+.level-card.intermediate { background: #fff8e1; }
+.level-card.advanced { background: #ffebee; }
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 48%;
+}
+
+form label {
+    font-weight: 600;
+    display: block;
+    text-align: left;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+    border: 1.8px solid #ccc;
+    background: #f9f9f9;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover,
+textarea:hover,
+select:hover {
+    background: #fff;
+    border-color: #bbb;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #11998e;
+    outline: none;
+    background: #fff;
+    box-shadow: 0 0 6px rgba(17, 153, 142, 0.3);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.btn {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #0f867e 0%, #33d96f 100%);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    transform: translateY(-2px);
+}
+
+small {
+    display: block;
+    color: #888;
+    margin-top: 4px;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header-section h1 {
+    color: #11998e;
+    font-size: 2.4em;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.header-section p {
+    color: #555;
+    font-size: 1.1em;
+    margin: 0 auto;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .levels { flex-direction: column; gap: 14px; }
+    .level-card { width: 100%; }
+    .form-group { min-width: 100%; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+<div class="container">
+    <div class="header-section">
+        <h1>Edit Interview</h1>
+        <p>Modify the interview configuration for this candidate</p>
+    </div>
+
+    <form method="POST">
+        <div class="levels">
+            <label class="level-card beginner" style="{% if interview.level == 'beginner' %}border-color: #11998e;{% endif %}">
+                <input type="radio" name="level" value="beginner" hidden {% if interview.level == 'beginner' %}checked{% endif %}>
+                <h3>Beginner</h3>
+                <p>0-2 years experience</p>
+            </label>
+
+            <label class="level-card intermediate" style="{% if interview.level == 'intermediate' %}border-color: #11998e;{% endif %}">
+                <input type="radio" name="level" value="intermediate" hidden {% if interview.level == 'intermediate' %}checked{% endif %}>
+                <h3>Intermediate</h3>
+                <p>2-5 years experience</p>
+            </label>
+
+            <label class="level-card advanced" style="{% if interview.level == 'advanced' %}border-color: #11998e;{% endif %}">
+                <input type="radio" name="level" value="advanced" hidden {% if interview.level == 'advanced' %}checked{% endif %}>
+                <h3>Advanced</h3>
+                <p>5+ years experience</p>
+            </label>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="interview_type">Interview Type</label>
+                <select name="interview_type" required>
+                    <option value="jd" {% if interview.type == 'jd' %}selected{% endif %}>Job Description Base (JD)</option>
+                    <option value="custom" {% if interview.type == 'custom' %}selected{% endif %}>Custom Questions</option>
+                    <option value="both" {% if interview.type == 'both' %}selected{% endif %}>Both</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="num_questions">No. of Questions (1-20)</label>
+                <input type="number" name="num_questions" min="1" max="20" value="{{ interview.num_questions or '' }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="custom_questions">Custom Questions (comma separated)</label>
+                <input type="text" name="custom_questions" value="{{ interview.custom_questions or '' }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="job_title">Job Title</label>
+                <input type="text" name="job_title" value="{{ interview.job_title or '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company_name">Company Name</label>
+                <input type="text" name="company_name" value="{{ interview.company_name or '' }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="job_desc">Job Description</label>
+            <textarea name="job_desc" rows="3">{{ interview.job_desc or '' }}</textarea>
+        </div>
+
+        <button type="submit" class="btn">Save Changes</button>
+        <a href="{{ url_for('hr.hr_links') }}" class="btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+document.querySelectorAll('.level-card').forEach(card => {
+    card.addEventListener('click', function () {
+        document.querySelectorAll('.level-card').forEach(c => {
+            c.style.borderColor = 'transparent';
+        });
+        this.style.borderColor = '#11998e';
+        this.querySelector('input[type="radio"]').checked = true;
+    });
+});
+</script>
+{% endblock %}

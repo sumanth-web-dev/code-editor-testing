@@ -1,0 +1,127 @@
+{% extends 'base/hr.html' %}
+
+{% block title %}Error - HR App{% endblock %} {# Set a specific title for the error page #}
+
+{% block css %}
+<style>
+    /*
+    Important Note: When overriding base template's body styles, ensure your
+    base template's body does NOT have inline styles or very high-specificity
+    rules that prevent these overrides from working.
+    Alternatively, if the base template has a main content wrapper, apply these
+    styles to that wrapper instead of directly to 'body'.
+    */
+    body {
+        margin: 0;
+        padding: 0;
+        /* Using a more modern, slightly softer red for the primary color */
+        background: #e94e50; /* Base red color */
+        background: linear-gradient(to right, #e94e50, #f9d423); /* Adjusted gradient */
+        font-family: 'Poppins', sans-serif; /* Ensure Poppins is imported in your base or here */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Use min-height for better responsiveness */
+        color: #fff;
+        animation: fadeIn 1.2s ease;
+        /* Ensure no scrollbars if content is minimal */
+        overflow: hidden;
+    }
+
+    /* Hide the default navigation bar and horizontal rule on the error page */
+    /* This assumes 'nav' and 'hr' are direct elements you want to hide.
+       If your nav is inside a class like '.hr-navbar', target that class. */
+    nav, .hr-nav-container, hr { /* Added a more specific class example for nav if applicable */
+        display: none !important; /* Use !important to ensure override */
+    }
+
+    .error-box {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 40px; /* Increased padding for more visual weight */
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+        animation: popIn 1s ease forwards; /* Use 'forwards' to maintain final state */
+        max-width: 550px; /* Slightly increased max-width */
+        width: 90%; /* Responsive width */
+        box-sizing: border-box; /* Include padding in calculation */
+    }
+
+    .error-box h2 {
+        margin-bottom: 20px; /* Increased margin */
+        font-size: 3em; /* Larger heading for impact */
+        font-weight: 700;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.2); /* Subtle text shadow */
+    }
+
+    .error-box p {
+        font-size: 1.4em; /* Larger paragraph text */
+        line-height: 1.6;
+        margin-bottom: 30px; /* Increased margin */
+        opacity: 0.9; /* Slightly less opaque for better readability against gradient */
+    }
+
+    /* Styling for the "Go to Home" link */
+    .error-box .home-link {
+        display: inline-block;
+        background: #fff;
+        color: #e94e50; /* Matching the new primary red */
+        padding: 14px 30px; /* Larger padding for clickability */
+        margin-top: 25px; /* Increased margin-top */
+        border-radius: 30px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.15); /* Stronger initial shadow */
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px; /* Slightly increased letter spacing */
+    }
+
+    .error-box .home-link:hover {
+        background: #e94e50;
+        color: #fff;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.3); /* More pronounced hover shadow */
+        transform: translateY(-3px); /* Slight lift effect */
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes popIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .error-box {
+            padding: 25px; /* Adjusted padding */
+        }
+        .error-box h2 {
+            font-size: 2.5em; /* Adjusted font size */
+        }
+        .error-box p {
+            font-size: 1.2em; /* Adjusted font size */
+        }
+        .error-box .home-link {
+            padding: 12px 25px; /* Adjusted padding */
+            font-size: 0.95em;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+    <div class="error-box">
+        {# Using an h1 for the primary title of the page, even if it's an error. #}
+        {# Displaying the specific error message passed from the backend #}
+        <p>{{ message | default('An unexpected error occurred.') }}</p>
+        <a href="https://www.naventra.in/" class="home-link">Go to Home Page</a>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {# No specific JS needed for this error page #}
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'hr/hr_analytics.html' %}
+
+{% block title %}Student Answers - HR App{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+<div style="text-align:center; margin:30px 0;">
+    <h2>Answers by {{ student.name }} for {{ interview.job_title }}</h2>
+    <p>Email: {{ student.email }} | Phone: {{ student.phone }}</p>
+</div>
+
+<table class="details-table">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>LLM Answer</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for qa in qa_pairs %}
+        <tr>
+            <td>{{ qa.text }}</td>
+            <td>{{ qa.answer_text or '—' }}</td>
+            <td>{{ qa.llm_answer_text or '—' }}</td>
+            <td>{{ qa.score if qa.score is not none else '—' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,391 @@
+{% extends 'base/hr.html' %}
+
+{% block title %}Create Interview - HR App{% endblock %}
+
+{% block css %}
+<style>
+    /* Specific styles for the "Create Interview" page */
+
+    /* Central container for the form */
+    .container {
+        background: white;
+        border-radius: 12px; /* Consistent border radius */
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15); /* Adjusted shadow for subtlety */
+        padding: 30px 40px; /* Adjusted padding */
+        text-align: center;
+        width: 90%; /* Slightly wider on larger screens */
+        max-width: 800px;
+        margin: 20px auto 40px auto; /* Margin to separate from HR nav and have bottom space */
+        box-sizing: border-box; /* Ensures padding is included in the width */
+    }
+
+    h1 {
+        color: #222; /* Darker color for main heading, consistent with base */
+        margin-bottom: 20px; /* Reduced margin for tighter spacing */
+        font-size: 2.2em; /* Slightly adjusted font size */
+        font-weight: 700;
+    }
+
+    .container p {
+        color: #555; /* Neutral color for descriptive text */
+        margin-bottom: 30px;
+        font-size: 1.1em;
+    }
+
+    .levels {
+        display: flex;
+        justify-content: center; /* Center the level cards */
+        margin: 20px 0 40px 0; /* Adjusted margin around levels */
+        flex-wrap: wrap;
+        gap: 25px; /* Increased space between level cards */
+    }
+
+    .level-card {
+        background: #f8f9fa;
+        border-radius: 10px; /* Consistent border radius */
+        padding: 25px; /* Increased padding */
+        width: calc(33.33% - 17px); /* Adjusted width to account for new gap */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 3px solid transparent; /* Thicker border for selection */
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .level-card:hover {
+        transform: translateY(-8px); /* More pronounced lift effect */
+        box-shadow: 0 12px 28px rgba(0,0,0,0.2); /* Stronger shadow on hover */
+        border-color: #11998e;
+    }
+
+    .level-card h3 {
+        margin: 0 0 8px 0; /* Adjusted margin */
+        color: #11998e;
+        font-size: 1.5em; /* Larger heading */
+        font-weight: 600;
+    }
+
+    .level-card p {
+        font-size: 0.95em;
+        color: #777;
+        margin: 0; /* Remove default paragraph margin */
+    }
+
+    /* Specific background colors for cards (optional, but good for visual distinction) */
+    .level-card.beginner { background-color: #e8f5e9; /* Light green */ }
+    .level-card.intermediate { background-color: #fffde7; /* Light yellow */ }
+    .level-card.advanced { background-color: #ffe0b2; /* Light orange */ }
+
+    /* Style for the selected level card */
+    .level-card.selected {
+        border-color: #11998e;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+        transform: translateY(-8px);
+    }
+
+    /* Form styling */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 18px; /* Slightly increased gap for more breathing room */
+        text-align: left; /* Align labels and inputs to the left */
+        margin-top: 20px; /* Space from the level cards */
+    }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px; /* Space between columns */
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        flex: 1;
+        min-width: calc(50% - 10px); /* For two columns, accounting for gap */
+        display: flex;
+        flex-direction: column;
+    }
+
+    form label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px; /* Increased space between label and input */
+        text-align: left; /* Ensure labels are left-aligned */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 12px 15px; /* Standardized padding */
+        border-radius: 8px; /* Consistent border radius */
+        border: 1px solid #ddd; /* Lighter border */
+        background: #fdfdfd; /* Very light background */
+        box-sizing: border-box;
+        font-size: 1em; /* Consistent font size */
+        transition: all 0.3s ease;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Subtle inner shadow */
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    [type="number"]:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #11998e;
+        outline: none;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.2), inset 0 1px 3px rgba(0,0,0,0.08); /* Focus ring with inner shadow */
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px; /* Slightly increased min-height for textareas */
+    }
+
+    select {
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23555' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E"); /* Darker arrow for contrast */
+        background-repeat: no-repeat;
+        background-position: right 15px center; /* Adjusted position */
+        background-size: 10px 10px; /* Slightly smaller arrow */
+    }
+
+    .btn {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        font-size: 1.1em; /* Slightly larger font */
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-top: 30px; /* Increased margin-top for separation */
+        align-self: center; /* Center the button in the column layout */
+        width: auto; /* Allow button to size based on content */
+        min-width: 180px; /* Ensure a minimum width for the button */
+    }
+
+    .btn:hover {
+        background: linear-gradient(135deg, #0e7a6f 0%, #33d96f 100%);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        transform: translateY(-2px);
+    }
+
+    small {
+        display: block;
+        color: #888;
+        margin-top: -8px; /* Adjusted to be closer to the input it describes */
+        margin-bottom: 10px; /* Space after small text */
+        font-size: 0.85em;
+        text-align: left;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .container {
+            padding: 25px 20px;
+            margin-top: 15px;
+            width: 95%; /* More width on small screens */
+        }
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        .container p {
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        .levels {
+            flex-direction: column;
+            gap: 15px;
+            margin: 15px 0 30px 0;
+        }
+        .level-card {
+            width: 100%;
+            padding: 20px;
+        }
+        .level-card h3 {
+            font-size: 1.3em;
+        }
+        .form-row {
+            flex-direction: column; /* Stack form groups on small screens */
+            gap: 15px;
+        }
+        .form-group {
+            min-width: 100%;
+        }
+        form label {
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        textarea,
+        select {
+            padding: 10px 12px;
+            font-size: 0.95em;
+        }
+        .btn {
+            padding: 12px 25px;
+            font-size: 1em;
+            margin-top: 25px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+ {% include 'base/_flashes.html' %}
+<div class="container">
+    <h1>Create New Interview</h1>
+    <p>Choose the difficulty level and provide details for your interview.</p>
+
+    <form method="POST">
+        <div class="levels">
+            <label class="level-card beginner">
+                <input type="radio" name="level" value="beginner" hidden {% if submitted_data and submitted_data.level == 'beginner' %}checked{% endif %}>
+                <h3>Beginner</h3>
+                <p>0-2 years experience</p>
+            </label>
+            <label class="level-card intermediate">
+                <input type="radio" name="level" value="intermediate" hidden {% if submitted_data and submitted_data.level == 'intermediate' %}checked{% endif %}>
+                <h3>Intermediate</h3>
+                <p>2-5 years experience</p>
+            </label>
+            <label class="level-card advanced">
+                <input type="radio" name="level" value="advanced" hidden {% if submitted_data and submitted_data.level == 'advanced' %}checked{% endif %}>
+                <h3>Advanced</h3>
+                <p>5+ years experience</p>
+            </label>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="interview_type">Interview Type</label>
+                <select name="interview_type" id="interview_type" required>
+                    <option value="jd" {% if submitted_data and submitted_data.interview_type == 'jd' %}selected{% endif %}>Job Description Based (JD)</option>
+                    <option value="custom" {% if submitted_data and submitted_data.interview_type == 'custom' %}selected{% endif %}>Custom Questions</option>
+                    <option value="both" {% if submitted_data and submitted_data.interview_type == 'both' %}selected{% endif %}>Both</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="num_questions">Number of Questions (1-20)</label>
+                <input type="number" name="num_questions" id="num_questions" placeholder="e.g. 5" min="1" max="20" value="{{ submitted_data.num_questions if submitted_data else 5 }}">
+                <small>Sets the number of questions to be generated.</small>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="hr_email">HR Email (optional)</label>
+                <input type="email" name="hr_email" id="hr_email" placeholder="hr@example.com" value="{{ submitted_data.hr_email if submitted_data }}">
+                <small>Email to send interview summary to.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="custom_questions">Custom Questions (comma separated)</label>
+                <input type="text" name="custom_questions" id="custom_questions" placeholder="e.g. What is Python?, Explain OOPs..." value="{{ submitted_data.custom_questions if submitted_data }}">
+                <small>Provide your own questions for the interview.</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="job_desc">Job Description</label>
+            <textarea name="job_desc" id="job_desc" rows="5" placeholder="Enter job description here..." required>{{ submitted_data.job_desc if submitted_data }}</textarea>
+            <small>Provide a detailed job description for JD-based questions.</small>
+        </div>
+
+        <button type="submit" class="btn">Generate Interview Link</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const levelCards = document.querySelectorAll('.level-card');
+        const hiddenRadioButtons = document.querySelectorAll('.level-card input[type="radio"]');
+
+        levelCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove 'selected' class from all cards
+                levelCards.forEach(c => {
+                    c.classList.remove('selected');
+                });
+
+                // Add 'selected' class to the clicked card
+                this.classList.add('selected');
+
+                // Check the hidden radio button within the clicked card
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Initialize: Set 'beginner' as selected by default if no other is checked
+        let anyChecked = false;
+        hiddenRadioButtons.forEach(radio => {
+            if (radio.checked) {
+                radio.closest('.level-card').classList.add('selected');
+                anyChecked = true;
+            }
+        });
+
+        if (!anyChecked) {
+            const beginnerCard = document.querySelector('.level-card.beginner');
+            if (beginnerCard) {
+                beginnerCard.classList.add('selected');
+                beginnerCard.querySelector('input[type="radio"]').checked = true;
+            }
+        }
+
+        // Logic to enable/disable fields based on interview type selection
+        const interviewTypeSelect = document.getElementById('interview_type');
+        const customQuestionsInput = document.getElementById('custom_questions');
+        const jobDescTextarea = document.getElementById('job_desc');
+
+        function toggleFormFields() {
+            const selectedType = interviewTypeSelect.value;
+
+            if (selectedType === 'jd') {
+                jobDescTextarea.disabled = false;
+                jobDescTextarea.required = true;
+                customQuestionsInput.disabled = true;
+                customQuestionsInput.required = false;
+                // Don't clear value if it was pre-filled by submitted_data for JD type
+                if (!customQuestionsInput.value) { // Only clear if not already pre-filled
+                    customQuestionsInput.value = '';
+                }
+            } else if (selectedType === 'custom') {
+                customQuestionsInput.disabled = false;
+                customQuestionsInput.required = true;
+                jobDescTextarea.disabled = true;
+                jobDescTextarea.required = false;
+                // Don't clear value if it was pre-filled by submitted_data for custom type
+                if (!jobDescTextarea.value) { // Only clear if not already pre-filled
+                    jobDescTextarea.value = '';
+                }
+            } else if (selectedType === 'both') {
+                jobDescTextarea.disabled = false;
+                jobDescTextarea.required = true;
+                customQuestionsInput.disabled = false;
+                customQuestionsInput.required = true;
+            }
+        }
+
+        // Call on load and on change
+        toggleFormFields();
+        interviewTypeSelect.addEventListener('change', toggleFormFields);
+    });
+</script>
+{% endblock %}
